@@ -12,9 +12,9 @@ const empResolvers = {
             }
         },
         // get employee by id
-        employeeById: async (_, { id }) => {
+        employeeById: async (_, { _id }) => {
             try{
-                const employee = await EmployeeModel.findById(id).exec();
+                const employee = await EmployeeModel.findById(_id).exec();
                 return employee;
             } catch (err) {
                 throw new Error(err);
