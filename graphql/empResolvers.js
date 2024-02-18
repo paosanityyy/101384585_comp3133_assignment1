@@ -2,14 +2,6 @@ const EmployeeModel = require('../models/Employee');
 
 const empResolvers = {
     Query: {
-        employees: async () => {
-            try{
-                const employees = await EmployeeModel.find().exec();
-                return employees;
-            } catch (err) {
-                throw new Error(err);
-            }
-        },
         // get all employees
         employees: async () => {
             try{
@@ -20,7 +12,7 @@ const empResolvers = {
             }
         },
         // get employee by id
-        employees: async (_, { id }) => {
+        employeeById: async (_, { id }) => {
             try{
                 const employee = await EmployeeModel.findById(id).exec();
                 return employee;
@@ -32,63 +24,60 @@ const empResolvers = {
     Mutation: {
         addEmployee: async (_, { firstName, lastName, email, gender, salary }) => {
             try{
-                const employee = new EmployeeModel({...args});
-                // if employee already exists
-                const existingEmployee = await EmployeeModel.findOne({ email: args.email }).exec();
-
+                const existingEmployee = await EmployeeModel.findOne({
+                    email: email
+                }).exec();
                 if(existingEmployee){
                     throw new Error('Employee already exists');
                 }
-
-                const savedEmployee = await employee.save();
-
+                const newEmployee = new EmployeeModel({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    gender: gender,
+                    salary: salary
+                });
+                const savedEmployee = await newEmployee.save();
                 if(savedEmployee){
                     return {
-                        message: `Employee successfully created!`,
+                        message: `${savedEmployee.firstName} successfully added!`,
                         employee: savedEmployee
-                    }
+                    };
                 }
             } catch (err) {
                 throw new Error(err);
             }
         },
-        // update employee by id
-        updateEmployee: async (_, { args }) => {
+        updateEmployee: async (_, { _id, firstName, lastName, email }) => {
             try{
-                const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
-                    args.id, 
-                    { ...args }, 
-                    { new: true }
-                ).exec();
-                
+                const updatedEmployee = await EmployeeModel.findByIdAndUpdate(_id, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email
+                }, {new: true}).exec();
                 if(updatedEmployee){
                     return {
-                        message: `Employee successfully updated!`,
+                        message: `${updatedEmployee.firstName} successfully updated!`,
                         employee: updatedEmployee
-                    }
+                    };
                 }
             } catch (err) {
                 throw new Error(err);
             }
         },
-
-        // delete employee by id
-        deleteEmployee: async (_, { id }) => {
+        deleteEmployee: async (_, { _id }) => {
             try{
-                const deletedEmployee = await EmployeeModel.findByIdAndDelete(id).exec();
+                const deletedEmployee = await EmployeeModel.findByIdAndDelete(_id).exec();
                 if(deletedEmployee){
                     return {
-                        message: `Employee successfully deleted!`,
+                        message: `${deletedEmployee.firstName} successfully deleted!`,
                         employee: deletedEmployee
-                    }
+                    };
                 }
             } catch (err) {
                 throw new Error(err);
             }
-        }
-
-                
-        
+        }                    
     },
 };
 

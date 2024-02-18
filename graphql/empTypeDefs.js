@@ -11,6 +11,7 @@ const empTypeDefs = gql`
     }
     type Query {
         employees: [Employee]
+        employeeById(_id: ID!): Employee
     }
     type EmployeeResponse {
         message: String!
@@ -25,13 +26,13 @@ const empTypeDefs = gql`
             salary: Float!
         ): EmployeeResponse
         updateEmployee(
-            id: ID!,
+            _id: ID!,
             firstName: String!, 
             lastName: String!, 
             email: String!,
         ): EmployeeResponse
         deleteEmployee(
-            id: ID!
+            _id: ID!
         ): EmployeeResponse
     } 
 `;

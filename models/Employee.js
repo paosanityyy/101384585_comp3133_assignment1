@@ -31,10 +31,4 @@ const EmployeeSchema = new Schema({
     },
 });
 
-// hash password before saving
-EmployeeSchema.pre('save', async function(next) {
-    this.password = bcrypt.hashSync(this.password, 10);
-    next();
-});
-
 module.exports = model('Employee', EmployeeSchema);

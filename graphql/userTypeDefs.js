@@ -8,7 +8,7 @@ const userTypeDefs = gql`
     }
     type Query {
         users: [User]
-        login(username: String!, password: String!): User
+        login(username: String!, password: String!): UserResponse
     }
     type UserResponse {
         message: String!
